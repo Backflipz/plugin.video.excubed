@@ -47,7 +47,7 @@ dl_path = plugin.get_setting('xg_dl_path',str)
 dl_path+='*.*'
 
 
-manual_meta = plugin.get_setting('manual_meta',bool)
+
 
 play = xbmc.Player()
 
