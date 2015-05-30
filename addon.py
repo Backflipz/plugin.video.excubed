@@ -49,8 +49,12 @@ dl_path+='*.*'
 
 
 #Fix for smb paths
-tmp_path = tmp_path.replace('smb://',r'\\')
-dl_path = dl_path.replace('smb://',r'\\')
+try:
+	tmp_user = re.search('//(.+?)/',tmp_path).group(1)
+	dl_user = re.search('//(.+?)/',dl_path).group(1)
+	tmp_path = tmp_path.replace('smb://%s'%tmp_user,r'\\%s' % plugin.get_setting('host',str))
+	dl_path = dl_path.replace('smb://%s' % dl_user,r'\\%s' % plugin.get_setting('host',str))
+except: plugin.log.info('error')
 
 @plugin.route('/')
 def index():
