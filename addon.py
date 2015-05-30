@@ -48,13 +48,9 @@ dl_path+='*.*'
 
 
 
-
-play = xbmc.Player()
-
-
-if xbmc.Player().onPlayBackEnded() or xbmc.Player().onPlayBackStopped():
-	plugin.log.info('PLAYBACK ENDED')
-
+#Fix for smb paths
+tmp_path = tmp_path.replace('smb://',r'\\')
+dl_path = dl_path.replace('smb://',r'\\')
 
 @plugin.route('/')
 def index():
