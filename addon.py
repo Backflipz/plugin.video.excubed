@@ -56,6 +56,8 @@ try:
 	dl_path = dl_path.replace('smb://%s' % dl_user,r'\\%s' % plugin.get_setting('host',str))
 except: plugin.log.info('error')
 
+plugin.log.info('TMP_PATH %s \n DL_PATH %s' % (tmp_path,dl_path))
+
 @plugin.route('/')
 def index():
 	items = [{
