@@ -75,16 +75,18 @@ def search(search_term='first_page',page = '1',id=None, labs = None):
 	items=[]
 	idx = 0
 	for option in results['Results']:
+		idx+=1
 		guid_url = api_url + 'packets/%s/enable.json' % (option['Guid'])
-		item = {'label':option['Name'],'path':plugin.url_for('play_file',url=guid_url,name=option['Name']),'is_playable':True, 'context_menu':[('Assign Metadata',actions.update_view(plugin.url_for('assign_metadata',id = idx,search_term = search_term,page = page,from_XG = True, name = False, bot = False))),('Just Download',actions.background(plugin.url_for('just_download',url = guid_url,data = {})))]}
+		item = {'label':option['Name'],'path':plugin.url_for('play_file',url=guid_url,name=option['Name']),'is_playable':True, 'context_menu':[('Assign Metadata',actions.update_view(plugin.url_for('assign_metadata',id = idx,search_term = search_term,page = page,from_XG = True, name = False, bot = False))),('Just Download',actions.background(plugin.url_for('just_download',url = guid_url,data = False))),('Delete File',actions.background(plugin.url_for('delete_file',name=option['Name'],all_files = False))),('Delete All Files',actions.background(plugin.url_for('delete_file',name=option['Name'],all_files = True)))]}
 		try:
 			if str(idx) == str(id):
-				items[idx]['info'] = labs
-				items[idx]['thumbnail'] = labs['cover_url']
-				items[idx]['properties'] = {'Fanart_Image':labs['backdrop_url']}
+				item['info'] = labs
+				item['thumbnail'] = labs['cover_url']
+				item['properties'] = {'Fanart_Image':labs['backdrop_url']}
 		except: pass
+		
 		items.append(item.copy())
-		idx+=1
+		
 	items.append({'label' : 'Next Page >>' , 'path' : plugin.url_for('search',search_term = search_term,page = str(int(page) + 1))})
 	return plugin.finish(items)
 	
@@ -112,23 +114,7 @@ def play_file(name,url,data = {}):
 				local_url = filename
 				break
 		
-	
-	
-	# Work around for seeing if it is still downloading
-	notUsing = True
-	if local_url and not dl_file:
-		try:
-			os.rename(local_url,local_url+"_")
-			notUsing = True
-			os.rename(local_url+"_",local_url)
-		except OSError as e:
-			notUsing = False
-	if local_url != '' and not notUsing or dl_file:
-		# if manual_meta: 
-			# infoLabels  = get_meta()
-			# item = {'info':infoLabels, 'path' : local_url , 'icon' : infoLabels['cover_url'], 'thumbnail' : infoLabels['cover_url']}
-			# plugin.set_resolved_url(item)
-		# else:
+	if len(local_url) > 0:
 		plugin.set_resolved_url(local_url)
 	else:
 		if data:
@@ -139,10 +125,12 @@ def play_file(name,url,data = {}):
 		
 		# if manual_meta: infoLabels  = get_meta()
 		# else: infoLabels = {'title' : name,'cover_url':''}
+		
+		## Buffering steps borrowed from xbmchub's MEGA addon
 		dialog = xbmcgui.DialogProgress()
 		dialog.create('Streaming file', 'Buffering file before playing...')
 		progress = 0
-		buffering_time = int(float(30))
+		buffering_time = plugin.get_setting('bf_time',int)
 		plugin.log.info("buffering_time="+str(buffering_time))
 		dialog.update(progress)
 		
@@ -488,7 +476,7 @@ def delete_file(name,all_files=False):
 	plugin.log.info('NAME ' + name)
 	tmp_files = glob.glob(tmp_path)
 	dl_files = glob.glob(dl_path)
-	if all_files:
+	if str(all_files) == 'True':
 		try:
 			for file in dl_files:
 				os.remove(file)
@@ -543,7 +531,7 @@ def search_ix(query = '**just_search**',page = '0',id = -1,labs = {}):
 	
 @plugin.route('/just_download/<url>/<data>')
 def just_download(url,data={}):
-	if data:
+	if str(data) != 'False':
 		headers['Content-Type'] = 'application/json'
 		r = requests.put(url,headers = headers, data = json.dumps(data))
 	else: r = requests.post(url,headers=headers,data = data)
@@ -565,4 +553,3 @@ def assign_metadata(id,search_term,page,name = False,bot=False, from_XG = False)
 
 if __name__ == '__main__':
 	plugin.run()
-	plugin.log.info('ARGS %s' % plugin.request.args)
