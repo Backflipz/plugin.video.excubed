@@ -75,7 +75,6 @@ def search(search_term='first_page',page = '1',id=None, labs = None):
 	items=[]
 	idx = 0
 	for option in results['Results']:
-		idx+=1
 		guid_url = api_url + 'packets/%s/enable.json' % (option['Guid'])
 		item = {'label':option['Name'] + ' || Size: %d MB' % int(option['Size'] / 1000000),'path':plugin.url_for('play_file',url=guid_url,name=option['Name']),'is_playable':True, 'context_menu':[('Assign Metadata',actions.update_view(plugin.url_for('assign_metadata',id = idx,search_term = search_term,page = page,from_XG = True, name = False, bot = False))),('Just Download',actions.background(plugin.url_for('just_download',url = guid_url,data = False))),('Delete File',actions.background(plugin.url_for('delete_file',name=option['Name'],all_files = False))),('Delete All Files',actions.background(plugin.url_for('delete_file',name=option['Name'],all_files = True)))]}
 		try:
@@ -84,7 +83,7 @@ def search(search_term='first_page',page = '1',id=None, labs = None):
 				item['thumbnail'] = labs['cover_url']
 				item['properties'] = {'Fanart_Image':labs['backdrop_url']}
 		except: pass
-		
+		idx+=1
 		items.append(item.copy())
 		
 	items.append({'label' : 'Next Page >>' , 'path' : plugin.url_for('search',search_term = search_term,page = str(int(page) + 1))})
