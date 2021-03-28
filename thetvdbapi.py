@@ -28,7 +28,7 @@ from cStringIO import StringIO
 from zipfile import ZipFile
 
 class TheTVDB(object):
-    def __init__(self, api_key='2B8557E0CBF7D720', language = 'en', want_raw = False):
+    def __init__(self, api_key='7a9b5f5bea2cec1f431732695a011b7a', language = 'en', want_raw = False): #old api key 2B8557E0CBF7D720
         #http://thetvdb.com/api/<apikey>/<request>
         self.api_key = api_key
         self.mirror_url = "http://thetvdb.com"

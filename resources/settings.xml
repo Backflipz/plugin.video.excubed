@@ -5,12 +5,19 @@
 		<setting id="api_key" label="API Key" type="text" default="" />
 		<setting id="tmp_path" type="folder" label="XG Tmp Path" source="auto" option="writeable" />
 		<setting id="xg_dl_path" type="folder" label="XG Download Path" source="auto" option="writeable" />
+		<setting id="whoosh_path" type="folder" label="Whoosh Index Path" source="auto" option="writeable" />
+		<setting id="nickname" type="text" label="Nickname" default=""/>
+		
+		<setting label="Hi10" type="lsep"/>
+		<setting id="hiusr" type="text" label="Hi10 UserName" default=""/>
+		<setting id="hipwd" type="text" option="hidden" label="Hi10 Password"/>
+		
 		
 		<setting label="Host Settings" type="lsep"/>
 		<setting id="host" type="text" label="Host? (localhost, IP address, etc.)" default="localhost"/>
 		<setting id="port" type="number" label="Port? (eg. 5556)" default="5556"/>
-		
-		<setting id="bf_time" type="slider" label="Buffering time for videos (in seconds)" default="30" range="10,10,300" option="int" />
+		<setting id="listen_port" type="number" label="Torrent Listening Port? (eg. 5556)" default="8086"/>
+		<setting id="bf_time" type="slider" label="Percent Loaded Before Play" default="10" range="1,1,100" option="int" />
 
        <!-- <setting id="download_path" type="folder" label="Download Path (NOT FAT32)" source="auto" option="writeable" />
         <setting id="keep_files" type="bool" label="Keep files after playback/download stops" default="false" /> -->
